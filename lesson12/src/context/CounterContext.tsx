@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react";
+import { ChangeEvent, ReactElement, createContext, useReducer } from "react";
 
 
 const initState = { count: 0, text: '' }
@@ -40,5 +40,24 @@ const useCounterContext = (initState: StateType) => {
     const decrement = () => dispath({ type: REDUCER_ACTION_TYPE.DECREMENT })
     const handleTextInput = (e: React.ChangeEvent<HTMLInputElement>) => dispath({ type: REDUCER_ACTION_TYPE.NEW_INPUT, payload: e.target.value })
 
+    return { state, increment, decrement, handleTextInput }
+}
 
+type UseCounterContextType = ReturnType<typeof useCounterContext>;
+
+const initContextState: UseCounterContextType = {
+    state: initState,
+    increment: () => { },
+    decrement: () => { },
+    handleTextInput: (e: ChangeEvent<HTMLInputElement>) => { }
+}
+
+export const CounterContext = createContext<UseCounterContextType>(initContextState);
+
+export const CounterContextProvider = ({ children }: { children: React.ReactNode }): ReactElement => {
+    return (
+        <CounterContext.Provider value={useCounterContext(initState)}>
+            {children}
+        </CounterContext.Provider>
+    )
 }
